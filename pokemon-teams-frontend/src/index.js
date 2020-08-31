@@ -4,6 +4,54 @@ const POKEMONS_URL = `${BASE_URL}/pokemons`
 
 document.addEventListener('DOMContentLoaded', function(){
 
+    document.addEventListener('click', function(e){
+        let bttn = e.target 
+        if(e.target.innerText === "Add Pokemon"){
+            let trainer = bttn.dataset.trainerId
+                addPokemon(trainer)
+        }
+        else if (bttn.className === 'release'){
+            console.log('release clikced')
+            let deleted = bttn.dataset.pokemonId
+
+            console.dir(bttn)
+            // let deletedP = bttn.dataset.trainerId
+            deletePokemon(deleted)
+        }
+
+    }) // end of clicke listener 
+
+    function deletePokemon(pokemon){
+    let configObj = {
+        method: 'DELETE',
+        headers: {'Content-Type':'application/json'},
+        body: {}
+    }
+   
+
+    fetch(`http://localhost:3000/pokemons/${pokemon}`, configObj)
+    .then(response => response.json())
+    .then(console.log)
+
+
+    } // end of delete pokemon 
+
+function addPokemon(trainer){
+    console.log(trainer)
+    
+   let configObj = {
+       
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({trainer_id: trainer})
+   }
+
+    fetch('http://localhost:3000/pokemons', configObj)
+    .then(response => response.json())
+    .then(console.log)
+}
+
+
     let cardContainer = document.querySelector('main')
 
     function renderCards(tData){
@@ -26,8 +74,9 @@ document.addEventListener('DOMContentLoaded', function(){
     function addTeam(card, array){   
         for (let p of array){
             let li = document.createElement('li')
-            console.log(array)
-        card.innerHTML=`<li>${p.nickname} (${p.species}) <button class="release" data-pokemon-id=${p.id}>Release</button></li>`
+           
+        li.innerHTML=`${p.nickname} (${p.species}) <button class="release" data-pokemon-id=${p.id}>Release</button>`
+        card.append(li)
         }
     } // end of pokemon iteration 
 
@@ -38,17 +87,12 @@ document.addEventListener('DOMContentLoaded', function(){
     } // end of pullTrainers GET fetch
 
     
-    fetch('http://localhost:3000/trainers')
-        .then(response => response.json())
-        .then(console.log())
+   
 
 
 
 
-// GET fetch for pokemon     
-// fetch('http://localhost:3000/pokemons')
-//     .then(response => response.json())
-//     .then(console.log)
+
 
 
 
